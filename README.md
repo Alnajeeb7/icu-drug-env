@@ -74,9 +74,10 @@ Agent manages a critically ill patient (septic shock, multi-organ dysfunction) o
 
 | Task | Model | Score |
 |------|-------|-------|
-| single_dose_calc | Qwen2.5-72B-Instruct | ~0.82 |
-| interaction_check | Qwen2.5-72B-Instruct | ~0.71 |
-| icu_management | Qwen2.5-72B-Instruct | ~0.54 |
+| single_dose_calc | Qwen2.5-72B-Instruct | 1.00 |
+| interaction_check | Qwen2.5-72B-Instruct | 1.00 |
+| icu_management | Qwen2.5-72B-Instruct | 0.94 |
+| **Average** | | **0.98** |
 
 ---
 
