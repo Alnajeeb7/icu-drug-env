@@ -1,0 +1,99 @@
+name: icu-drug-env
+version: 1.0.0
+description: >
+  ICU Drug Dosing and Interaction Environment.
+  Simulates real clinical decision-making: drug dose calculation,
+  drug-drug interaction detection, and full ICU patient management
+  with evolving vitals. Built on public pharmacological knowledge
+  with no external data dependencies.
+
+author: icu-drug-env-team
+tags:
+  - openenv
+  - medical
+  - clinical
+  - pharmacology
+  - icu
+  - drug-interactions
+  - real-world
+  - agentic
+
+tasks:
+  - name: single_dose_calc
+    difficulty: easy
+    description: >
+      Agent receives a patient (weight, diagnosis, renal function) and a drug.
+      Must calculate the correct dose in mg. Scored by proximity to correct dose.
+    max_steps: 3
+    reward_range: [0.0, 1.0]
+    grader: deterministic
+
+  - name: interaction_check
+    difficulty: medium
+    description: >
+      Agent receives a patient on 3 concurrent medications.
+      Must identify the dangerous drug-drug interaction pair and
+      recommend a safe alternative. Scored 0.5 for pair + 0.5 for alternative.
+    max_steps: 5
+    reward_range: [0.0, 1.0]
+    grader: deterministic
+
+  - name: icu_management
+    difficulty: hard
+    description: >
+      Agent manages a critically ill patient (septic shock, multi-organ dysfunction)
+      over 10 steps. Vitals evolve each step based on prescribed drugs.
+      Agent must keep MAP, glucose, HR, SpO2, and potassium in target ranges
+      while avoiding dangerous drug combinations.
+    max_steps: 10
+    reward_range: [0.0, 1.0]
+    grader: continuous
+
+api:
+  reset: POST /reset
+  step: POST /step
+  state: GET /state
+  health: GET /health
+  websocket: /ws
+
+observation_space:
+  type: structured
+  fields:
+    - task_name: string
+    - step: integer
+    - patient: PatientProfile
+    - vitals: PatientVitals
+    - available_drugs: list[string]
+    - current_prescription: dict
+    - alert_flags: list[string]
+    - lab_results: dict[string, float]
+    - task_instruction: string
+
+action_space:
+  type: structured
+  fields:
+    - action_type: enum[prescribe_dose, flag_interaction, adjust_dose, hold_drug, recommend_alternative]
+    - drug_name: string (optional)
+    - dose_mg: float (optional)
+    - dose_units: string (optional)
+    - dangerous_pair: list[string, string] (optional)
+    - alternative_drug: string (optional)
+    - rationale: string
+
+reward_space:
+  type: float
+  range: [0.0, 1.0]
+  signal: dense
+  partial_credit: true
+
+environment:
+  stateful: true
+  deterministic: true (given same seed)
+  episode_termination: max_steps or task_success
+  seed_support: true
+
+infrastructure:
+  framework: fastapi
+  transport: [http, websocket]
+  containerized: true
+  hf_space: true
