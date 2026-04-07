@@ -84,7 +84,7 @@ Agent manages a critically ill patient (septic shock, multi-organ dysfunction) o
 
 ### Local Python
 ```bash
-git clone https://github.com/your-username/icu-drug-env
+git clone https://github.com/Alnajeeb7/icu-drug-env
 cd icu-drug-env
 pip install -r requirements.txt
 

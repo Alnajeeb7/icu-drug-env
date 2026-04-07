@@ -38,6 +38,23 @@ class StepRequest(BaseModel):
     action: Dict[str, Any]
 
 
+@app.get("/")
+def root():
+    return {
+        "env": "ICU Drug Dosing Environment",
+        "version": "1.0.0",
+        "status": "running",
+        "endpoints": {
+            "POST /reset": "Start a new episode",
+            "POST /step": "Take an action",
+            "GET /state": "Get current state",
+            "GET /health": "Health check",
+            "GET /tasks": "List available tasks",
+            "WS /ws": "WebSocket interface",
+        },
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "env": "icu-drug-env", "version": "1.0.0"}
