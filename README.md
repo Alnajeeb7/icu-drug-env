@@ -80,6 +80,30 @@ Agent manages a critically ill patient (septic shock, multi-organ dysfunction) o
 
 ---
 
+## Getting Your HuggingFace Token
+
+You need a free HuggingFace API token to run the inference script (for LLM access via the HF Inference API).
+
+1. Create a free account at [huggingface.co](https://huggingface.co/join)
+2. Go to **Settings** → **Access Tokens**: [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+3. Click **New token**
+4. Give it a name (e.g. `icu-drug-env`) and select **Read** permission (or **Write** if you also want to push to HF Spaces)
+5. Click **Generate** and copy the token (starts with `hf_...`)
+
+Set it as an environment variable before running inference:
+
+```bash
+# Linux/macOS
+export HF_TOKEN="hf_your_token_here"
+
+# Windows PowerShell
+$env:HF_TOKEN = "hf_your_token_here"
+```
+
+> ⚠️ **Never commit your token to code or share it publicly.** Use environment variables only.
+
+---
+
 ## Setup & Usage
 
 ### Local Python
