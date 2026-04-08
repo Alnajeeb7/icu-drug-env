@@ -110,10 +110,9 @@ def grade_action(
         return 0.0001, "Reference dose is 0 — scenario error."
 
     error_ratio = abs(proposed_dose - correct_dose) / correct_dose
-    score = max(0.0001, 1.0 - error_ratio)
-    if score >= 1.0:
-        score = 0.9999
-    score = round(score, 4)
+    # Guarantee score is strictly between 0 and 1
+    score = round(max(0.0001, 1.0 - error_ratio), 4)
+    score = max(0.0001, min(0.9999, score))
 
     if score >= 0.95:
         feedback = f"Excellent! Dose {proposed_dose} mg is correct (target: {correct_dose} mg)."

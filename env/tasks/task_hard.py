@@ -229,13 +229,13 @@ def score_vitals(vitals: PatientVitals, scenario: Dict[str, Any], prescription: 
     for vital_name, (low, high) in targets.items():
         value = vital_values.get(vital_name, 0)
         if low <= value <= high:
-            scores[vital_name] = 1.0
+            deviation = 0.0
+        elif value < low:
+            deviation = (low - value) / low
         else:
-            if value < low:
-                deviation = (low - value) / low
-            else:
-                deviation = (value - high) / high
-            scores[vital_name] = max(0.0, 1.0 - deviation)
+            deviation = (value - high) / high
+            
+        scores[vital_name] = max(0.0001, min(0.9999, round(max(0.0001, 1.0 - deviation), 4)))
 
     drug_interaction_penalty = 0.0
     drugs = list(prescription.keys()) if prescription else []
@@ -248,10 +248,10 @@ def score_vitals(vitals: PatientVitals, scenario: Dict[str, Any], prescription: 
                 drug_interaction_penalty = 0.3
                 break
 
-    overall = max(0.0001, sum(scores.values()) / len(scores) - drug_interaction_penalty)
-    if overall >= 1.0:
-        overall = 0.9999
-    return round(overall, 4), scores
+    # Guarantee score is strictly between 0 and 1
+    overall = round(max(0.0001, sum(scores.values()) / len(scores) - drug_interaction_penalty), 4)
+    overall = max(0.0001, min(0.9999, overall))
+    return overall, scores
 
 
 def grade_action(
@@ -297,10 +297,9 @@ def grade_action(
                 elif info["severity"] == "major":
                     interaction_penalty += 0.2
 
-    step_reward = max(0.0001, vital_score - interaction_penalty)
-    if step_reward >= 1.0:
-        step_reward = 0.9999
-    step_reward = round(step_reward, 4)
+    # Guarantee step reward is strictly between 0 and 1
+    step_reward = round(max(0.0001, vital_score - interaction_penalty), 4)
+    step_reward = max(0.0001, min(0.9999, step_reward))
 
     feedback_parts = [f"Step {step} vitals score: {vital_score:.2f}"]
     for v, s in vital_breakdown.items():

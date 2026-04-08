@@ -134,10 +134,9 @@ def grade_action(
     alt_score = 0.5 if alt_valid else 0.0
 
     raw_score = pair_score + alt_score
-    score = max(0.0001, raw_score - step_penalty)
-    if score >= 1.0:
-        score = 0.9999
-    score = round(score, 4)
+    # Guarantee score is strictly between 0 and 1
+    score = round(max(0.0001, raw_score - step_penalty), 4)
+    score = max(0.0001, min(0.9999, score))
 
     feedback_parts = []
     correct_pair_str = " + ".join(scenario["dangerous_pair"])

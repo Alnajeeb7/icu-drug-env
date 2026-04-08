@@ -221,19 +221,19 @@ def main():
             print(f"ERROR running task {task_name}: {e}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
             print(
-                f"[END] success=false steps=0 rewards=0.00",
+                f"[END] success=false steps=0 score=0.0001 rewards=0.0001",
                 flush=True,
             )
-            results.append({"task": task_name, "score": 0.0, "success": False})
+            results.append({"task": task_name, "score": 0.0001, "success": False})
 
     # Summary goes to stderr to avoid polluting structured stdout output
     total = 0.0
     print("\n===== FINAL RESULTS =====", file=sys.stderr)
     for r in results:
-        print(f"  {r['task']}: score={r.get('score', 0.0):.2f} success={r.get('success', False)}", file=sys.stderr)
-        total += r.get("score", 0.0)
-    avg = total / len(results) if results else 0.0
-    print(f"  AVERAGE SCORE: {avg:.2f}", file=sys.stderr)
+        print(f"  {r['task']}: score={r.get('score', 0.0001):.4f} success={r.get('success', False)}", file=sys.stderr)
+        total += r.get("score", 0.0001)
+    avg = total / len(results) if results else 0.0001
+    print(f"  AVERAGE SCORE: {avg:.4f}", file=sys.stderr)
 
 
 if __name__ == "__main__":

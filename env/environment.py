@@ -201,7 +201,7 @@ class ICUDrugEnv:
                 "episode_id": self._episode_id,
                 "step": self._step,
                 "task": self.task_name,
-                "cumulative_reward": round(max(0.0001, min(0.9999 * self._step, sum(self._reward_history))), 4),
+                "cumulative_reward": max(0.0001, min(0.9999 * self._step, round(sum(self._reward_history), 4))),
             },
         )
 
