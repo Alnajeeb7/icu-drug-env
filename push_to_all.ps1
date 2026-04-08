@@ -1,15 +1,18 @@
 Write-Host "Syncing to GitHub and Hugging Face..." -ForegroundColor Cyan
 
 # 0. Ensure uv is installed (REQUIRED for OpenEnv)
-if (!(Get-Command uv -ErrorAction SilentlyContinue)) {
+$uvPath = "$HOME\.cargo\bin\uv.exe"
+if (!(Get-Command uv -ErrorAction SilentlyContinue) -and !(Test-Path $uvPath)) {
     Write-Host "Installing uv package manager..." -ForegroundColor Yellow
     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-    $env:Path += ";$HOME\.cargo\bin"
 }
+
+# Use absolute path if uv is not in PATH
+$uvCmd = if (Get-Command uv -ErrorAction SilentlyContinue) { "uv" } else { $uvPath }
 
 # 1. Generate uv.lock
 Write-Host "Generating uv.lock..." -ForegroundColor Yellow
-uv lock
+& $uvCmd lock
 
 # 2. Add all changes
 git add .
