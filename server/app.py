@@ -98,10 +98,8 @@ def reset(request: ResetRequest = Body(default=None)):
     _sessions[session_id] = env
     response = env.reset()
     return {
-        "session_id": session_id,
-        "task_name": response.task_name,
-        "episode_id": response.episode_id,
         "observation": response.observation.model_dump(),
+        "info": {"session_id": session_id, "episode_id": response.episode_id, "task_name": response.task_name}
     }
 
 
@@ -119,9 +117,10 @@ def step(request: StepRequest):
 
     return {
         "observation": response.observation.model_dump(),
-        "reward": response.reward.model_dump(),
-        "done": response.done,
-        "info": response.info,
+        "reward": response.reward.value,
+        "terminated": response.done,
+        "truncated": False,
+        "info": {**response.info, "reward_details": response.reward.model_dump()}
     }
 
 
