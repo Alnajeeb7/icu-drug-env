@@ -12,7 +12,7 @@ import json
 import uuid
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Body
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -90,7 +90,9 @@ def list_tasks():
 
 
 @app.post("/reset")
-def reset(request: ResetRequest):
+def reset(request: ResetRequest = Body(default=None)):
+    if request is None:
+        request = ResetRequest()
     session_id = request.session_id or str(uuid.uuid4())[:12]
     env = ICUDrugEnv(task_name=request.task_name, seed=request.seed)
     _sessions[session_id] = env
