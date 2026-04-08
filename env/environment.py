@@ -169,7 +169,8 @@ class ICUDrugEnv:
 
             episode_score = None
             if done:
-                episode_score = round(sum(self._step_scores) / len(self._step_scores), 4) if self._step_scores else 0.0
+                avg_score = sum(self._step_scores) / len(self._step_scores) if self._step_scores else 0.0001
+                episode_score = round(max(0.0001, min(0.9999, avg_score)), 4)
 
             reward = ICUReward(
                 value=round(step_reward, 4),

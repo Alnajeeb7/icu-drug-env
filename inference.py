@@ -191,7 +191,7 @@ def run_episode(
 
     print(
         f"[END] success={'true' if success else 'false'} steps={steps_taken} "
-        f"rewards={rewards_str}",
+        f"score={final_score:.4f} rewards={rewards_str}",
         flush=True,
     )
 

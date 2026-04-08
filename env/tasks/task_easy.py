@@ -99,18 +99,20 @@ def grade_action(
     proposed_dose = action.get("dose_mg")
 
     if proposed_dose is None:
-        return 0.0, f"No dose provided. Correct dose was {correct_dose} mg."
+        return 0.0001, f"No dose provided. Correct dose was {correct_dose} mg."
 
     try:
         proposed_dose = float(proposed_dose)
     except (ValueError, TypeError):
-        return 0.0, f"Invalid dose format. Correct dose was {correct_dose} mg."
+        return 0.0001, f"Invalid dose format. Correct dose was {correct_dose} mg."
 
     if correct_dose == 0:
-        return 0.0, "Reference dose is 0 — scenario error."
+        return 0.0001, "Reference dose is 0 — scenario error."
 
     error_ratio = abs(proposed_dose - correct_dose) / correct_dose
-    score = max(0.0, 1.0 - error_ratio)
+    score = max(0.0001, 1.0 - error_ratio)
+    if score >= 1.0:
+        score = 0.9999
     score = round(score, 4)
 
     if score >= 0.95:

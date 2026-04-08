@@ -248,7 +248,9 @@ def score_vitals(vitals: PatientVitals, scenario: Dict[str, Any], prescription: 
                 drug_interaction_penalty = 0.3
                 break
 
-    overall = max(0.0, sum(scores.values()) / len(scores) - drug_interaction_penalty)
+    overall = max(0.0001, sum(scores.values()) / len(scores) - drug_interaction_penalty)
+    if overall >= 1.0:
+        overall = 0.9999
     return round(overall, 4), scores
 
 
@@ -295,7 +297,9 @@ def grade_action(
                 elif info["severity"] == "major":
                     interaction_penalty += 0.2
 
-    step_reward = max(0.0, vital_score - interaction_penalty)
+    step_reward = max(0.0001, vital_score - interaction_penalty)
+    if step_reward >= 1.0:
+        step_reward = 0.9999
     step_reward = round(step_reward, 4)
 
     feedback_parts = [f"Step {step} vitals score: {vital_score:.2f}"]
