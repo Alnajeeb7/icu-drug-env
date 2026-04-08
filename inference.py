@@ -27,7 +27,12 @@ from env.environment import ICUDrugEnv
 
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-HF_TOKEN = os.getenv("HF_TOKEN") or os.getenv("API_KEY", "")
+HF_TOKEN = os.getenv("HF_TOKEN")
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")  # Optional — if using from_docker_image()
+
+if HF_TOKEN is None:
+    raise ValueError("HF_TOKEN environment variable is required")
+
 BENCHMARK = "icu-drug-env"
 MAX_STEPS_OVERRIDE = None
 TEMPERATURE = 0.3
@@ -186,7 +191,7 @@ def run_episode(
 
     print(
         f"[END] success={'true' if success else 'false'} steps={steps_taken} "
-        f"score={final_score:.2f} rewards={rewards_str}",
+        f"rewards={rewards_str}",
         flush=True,
     )
 
@@ -200,11 +205,8 @@ def run_episode(
 
 
 def main():
-    if not HF_TOKEN and "router.huggingface.co" in API_BASE_URL:
-        print("WARNING: HF_TOKEN not set. Set HF_TOKEN env var for authenticated requests.", file=sys.stderr)
-
     client = OpenAI(
-        api_key=HF_TOKEN or "dummy",
+        api_key=HF_TOKEN,
         base_url=API_BASE_URL,
     )
 
@@ -217,18 +219,19 @@ def main():
             print(f"ERROR running task {task_name}: {e}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
             print(
-                f"[END] success=false steps=0 score=0.00 rewards=0.00",
+                f"[END] success=false steps=0 rewards=0.00",
                 flush=True,
             )
             results.append({"task": task_name, "score": 0.0, "success": False})
 
-    print("\n===== FINAL RESULTS =====", flush=True)
+    # Summary goes to stderr to avoid polluting structured stdout output
     total = 0.0
+    print("\n===== FINAL RESULTS =====", file=sys.stderr)
     for r in results:
-        print(f"  {r['task']}: score={r['score']:.2f} success={r['success']}", flush=True)
-        total += r["score"]
+        print(f"  {r['task']}: score={r.get('score', 0.0):.2f} success={r.get('success', False)}", file=sys.stderr)
+        total += r.get("score", 0.0)
     avg = total / len(results) if results else 0.0
-    print(f"  AVERAGE SCORE: {avg:.2f}", flush=True)
+    print(f"  AVERAGE SCORE: {avg:.2f}", file=sys.stderr)
 
 
 if __name__ == "__main__":
