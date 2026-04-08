@@ -1,3 +1,12 @@
+---
+title: ICU Drug Dosing Environment
+emoji: 🏥
+colorFrom: red
+colorTo: blue
+sdk: docker
+app_port: 7860
+---
+
 # ICU Drug Dosing Environment 🏥
 
 An OpenEnv-compatible reinforcement learning environment that simulates real ICU clinical decision-making. AI agents must calculate drug doses, detect dangerous drug interactions, and manage critically ill patients.
