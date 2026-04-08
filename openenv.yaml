@@ -25,7 +25,7 @@ tasks:
       Agent receives a patient (weight, diagnosis, renal function) and a drug.
       Must calculate the correct dose in mg. Scored by proximity to correct dose.
     max_steps: 3
-    reward_range: [0.0, 1.0]
+    reward_range: [0.0001, 0.9999]
     grader: deterministic
 
   - name: interaction_check
@@ -35,7 +35,7 @@ tasks:
       Must identify the dangerous drug-drug interaction pair and
       recommend a safe alternative. Scored 0.5 for pair + 0.5 for alternative.
     max_steps: 5
-    reward_range: [0.0, 1.0]
+    reward_range: [0.0001, 0.9999]
     grader: deterministic
 
   - name: icu_management
@@ -46,7 +46,7 @@ tasks:
       Agent must keep MAP, glucose, HR, SpO2, and potassium in target ranges
       while avoiding dangerous drug combinations.
     max_steps: 10
-    reward_range: [0.0, 1.0]
+    reward_range: [0.0001, 0.9999]
     grader: continuous
 
 api:
@@ -82,7 +82,7 @@ action_space:
 
 reward_space:
   type: float
-  range: [0.0, 1.0]
+  range: [0.0001, 0.9999]
   signal: dense
   partial_credit: true
 

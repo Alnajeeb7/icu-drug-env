@@ -111,7 +111,7 @@ class ICUDrugEnv:
             done = self._step >= max_steps or score >= 0.95
             reward = ICUReward(
                 value=round(score, 4),
-                components={"dose_accuracy": score},
+                components={"dose_accuracy": max(0.0001, min(0.9999, score))},
                 feedback=feedback,
                 is_terminal=done,
                 episode_score=score if done else None,
@@ -137,8 +137,8 @@ class ICUDrugEnv:
             reward = ICUReward(
                 value=round(score, 4),
                 components={
-                    "pair_identified": 0.5 if score >= 0.5 else 0.0,
-                    "alternative_valid": 0.5 if score >= 0.9 else 0.0,
+                    "pair_identified": 0.4999 if score >= 0.5 else 0.0001,
+                    "alternative_valid": 0.4999 if score >= 0.9 else 0.0001,
                 },
                 feedback=feedback,
                 is_terminal=done,
@@ -174,7 +174,7 @@ class ICUDrugEnv:
 
             reward = ICUReward(
                 value=round(step_reward, 4),
-                components={"vitals_score": step_reward},
+                components={"vitals_score": max(0.0001, min(0.9999, step_reward))},
                 feedback=feedback,
                 is_terminal=done,
                 episode_score=episode_score,
@@ -201,7 +201,7 @@ class ICUDrugEnv:
                 "episode_id": self._episode_id,
                 "step": self._step,
                 "task": self.task_name,
-                "cumulative_reward": round(sum(self._reward_history), 4),
+                "cumulative_reward": round(max(0.0001, min(0.9999 * self._step, sum(self._reward_history))), 4),
             },
         )
 

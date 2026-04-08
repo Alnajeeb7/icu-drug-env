@@ -69,21 +69,21 @@ def list_tasks():
                 "difficulty": "easy",
                 "description": "Calculate the correct drug dose for a patient given weight and condition.",
                 "max_steps": 3,
-                "score_range": [0.0, 1.0],
+                "score_range": [0.0001, 0.9999],
             },
             {
                 "name": "interaction_check",
                 "difficulty": "medium",
                 "description": "Identify dangerous drug-drug interactions and recommend safe alternatives.",
                 "max_steps": 5,
-                "score_range": [0.0, 1.0],
+                "score_range": [0.0001, 0.9999],
             },
             {
                 "name": "icu_management",
                 "difficulty": "hard",
                 "description": "Manage a critically ill ICU patient with evolving vitals over 10 steps.",
                 "max_steps": 10,
-                "score_range": [0.0, 1.0],
+                "score_range": [0.0001, 0.9999],
             },
         ]
     }

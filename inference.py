@@ -171,7 +171,7 @@ def run_episode(
 
         print(
             f"[STEP] step={steps_taken} action={action_str} "
-            f"reward={reward_val:.2f} done={'true' if done else 'false'} "
+            f"reward={reward_val:.4f} done={'true' if done else 'false'} "
             f"error={error_str}",
             flush=True,
         )
@@ -180,12 +180,14 @@ def run_episode(
             final_score = step_response.reward.episode_score
 
     if not rewards:
-        rewards = [0.0]
-    if final_score == 0.0:
-        final_score = rewards[-1] if task_name != "icu_management" else round(sum(rewards) / len(rewards), 2)
+        rewards = [0.0001]
+    if final_score < 0.0001:
+        final_score = rewards[-1] if task_name != "icu_management" else round(sum(rewards) / len(rewards), 4)
+    if final_score >= 1.0:
+        final_score = 0.9999
 
     success = final_score >= 0.5
-    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
+    rewards_str = ",".join(f"{r:.4f}" for r in rewards)
 
     env.close()
 
