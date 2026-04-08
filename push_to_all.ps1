@@ -1,5 +1,9 @@
 Write-Host "Syncing to GitHub and Hugging Face..." -ForegroundColor Cyan
 
+# 0. Generate uv.lock (REQUIRED for OpenEnv)
+Write-Host "Generating uv.lock..." -ForegroundColor Yellow
+uv lock
+
 # 1. Add all changes
 git add .
 
