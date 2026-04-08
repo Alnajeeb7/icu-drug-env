@@ -1,26 +1,17 @@
 Write-Host "Syncing to GitHub and Hugging Face..." -ForegroundColor Cyan
 
 # 0. Ensure uv is installed (REQUIRED for OpenEnv)
-$uvPaths = @(
-    "$HOME\.local\bin\uv.exe",
-    "$HOME\.cargo\bin\uv.exe"
-)
-if (!(Get-Command uv -ErrorAction SilentlyContinue) -and !(($uvPaths | Where-Object { Test-Path $_ }))) {
+$uvPath = "$HOME\.cargo\bin\uv.exe"
+if (!(Get-Command uv -ErrorAction SilentlyContinue) -and !(Test-Path $uvPath)) {
     Write-Host "Installing uv package manager..." -ForegroundColor Yellow
     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 }
 
-# Find the valid uv command
-$uvCmd = if (Get-Command uv -ErrorAction SilentlyContinue) { "uv" } 
-         else { $uvPaths | Where-Object { Test-Path $_ } | Select-Object -First 1 }
-
-if (!$uvCmd) {
-    Write-Error "Could not find uv.exe. Please install uv manually (pip install uv) and try again."
-    exit 1
-}
+# Use absolute path if uv is not in PATH
+$uvCmd = if (Get-Command uv -ErrorAction SilentlyContinue) { "uv" } else { $uvPath }
 
 # 1. Generate uv.lock
-Write-Host "Generating uv.lock using $uvCmd ..." -ForegroundColor Yellow
+Write-Host "Generating uv.lock..." -ForegroundColor Yellow
 & $uvCmd lock
 
 # 2. Add all changes
